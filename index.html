@@ -1,27 +1,116 @@
 <!DOCTYPE html>
+<html lang = "en">
 <html>
   <head>
+    <!--
+    adapted from youtube 
+    Brad Westfall 
+    "Build a small Twitter with jQuery. Learning for novice JavaScripters"
+    Published on May 10, 2013.
+    -->
+    <meta charset = "utf-8">
+    <title>Twiddler</title>
+
+    <script src="https://kit.fontawesome.com/5a4ad4f5cd.js"></script>
     <script src="jquery.js"></script>
     <script src="data_generator.js"></script>
+    <style>
+      h3, p {
+        display: inline;
+      }
+      .fab {
+        font-size: 1.25rem;
+        color: skyblue;
+      }
+      .btn-new {
+        color: white;
+        background-color: grey;
+      }
+      .highlight {
+        text-decoration: underline;
+        color: blue;
+        cursor: pointer;
+      }
+    </style>
   </head>
   <body>
+    
     <script>
+      
+      function showNewTweet(tweet) {
+        let tweets = $(document.createElement('div')).addClass('tweet');
+        // let a = $(document.createElement("a").setAttribute(attribute,value)).text(`@${tweet.user}`);
+        let username = `@${tweet.user}`;
+        let h3 = $(document.createElement('h3')).text(username);
+        let p = $(document.createElement('p')).text(` - ${tweet.message} - `);
+        let ital = $(document.createElement('i')).text(tweet.created_at);
+        $('#tweets').prepend(tweets.append(h3).append(p).append(ital));
+      }
 
+      // When the DOM is ready
       $(document).ready(function(){
         var $body = $('body');
-        $body.html('');
-
         var index = streams.home.length - 1;
+        var lengthPrior = streams.home.length;
         while(index >= 0){
           var tweet = streams.home[index];
-          var $tweet = $('<div></div>');
-          $tweet.text('@' + tweet.user + ': ' + tweet.message);
-          $tweet.appendTo($body);
+          showNewTweet(tweet);
           index -= 1;
         }
 
+        //check for new tweets
+        var $button = $("<input class='btn-new' type=button value='Check for New Tweets'>");
+        $button.prependTo($('.page-container'));
+        $button.on('click', function(){
+          if (lengthPrior < streams.home.length) {
+            let count = streams.home.length - lengthPrior;
+            while (count > 0) {
+              let tweet = streams.home[(lengthPrior - 1) + count];
+              showNewTweet(tweet);
+              count -= 1;
+            }
+            lengthPrior = streams.home.length;
+          }
+        });
+
+        //style the pointer when hovering over username
+        $('#tweets').on('mouseover', 'h3', function(){
+          $(this).addClass('highlight');
+        });
+        $('#tweets').on('mouseleave', 'h3', function(){
+          $(this).removeClass('highlight');
+        });
       });
 
     </script>
+    
+    <header>
+      <h1> Twiddler</h1> 
+    </header>
+    <div class = "page-container">
+      <!--
+      <section id = "post">
+        <div class = "field">
+          <input placeholder = "What's happening?">
+          <i class="fab fa-twitter"></i>
+        </div>
+      </section>
+      -->
+      <section id = "tweets">
+
+        <div class = "tweet">
+          <h3></h3>
+          <p>  <i> </i></p>
+        </div>
+
+
+      </section>
+    </div>
+
+
+
+
+
+
   </body>
 </html>
