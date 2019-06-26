@@ -41,18 +41,20 @@
         let tweets = $(document.createElement('div')).addClass('tweet');
         // let a = $(document.createElement("a").setAttribute(attribute,value)).text(`@${tweet.user}`);
         let username = `@${tweet.user}`;
-        let h3 = $(document.createElement('h3')).text(username);
+        let h3 = $(document.createElement('h3')).addClass(tweet.user).text(username);
         let p = $(document.createElement('p')).text(` - ${tweet.message} - `);
         let ital = $(document.createElement('i')).text(tweet.created_at);
         $('#tweets').prepend(tweets.append(h3).append(p).append(ital));
       }
+
+
 
       // When the DOM is ready
       $(document).ready(function(){
         var $body = $('body');
         var index = streams.home.length - 1;
         var lengthPrior = streams.home.length;
-        while(index >= 0){
+        while (index >= 0) {
           var tweet = streams.home[index];
           showNewTweet(tweet);
           index -= 1;
@@ -80,7 +82,30 @@
         $('#tweets').on('mouseleave', 'h3', function(){
           $(this).removeClass('highlight');
         });
+      
+        //user timeline
+        $(`#tweets`).on('click', 'h3', function(){
+          let name = this.innerHTML.slice(1);
+          let carriageReturn = $(document.createElement('br'));
+          $('#tweets').prepend(carriageReturn);
+          streams.users[name].forEach( tweet => showNewTweet(tweet) );
+          let h2 = $(document.createElement('h2')).text(`${this.innerHTML}'s tweets:`);
+          $('#tweets').prepend(h2);
+          // let index = streams.users[name].length - 1;
+          // let carriageReturn = $(document.createElement('br'));
+          // $('#tweets').prepend(carriageReturn);
+          // while (index >= 0) {
+          //   let tweet = streams.users[name][index];
+          //   showNewTweet(tweet);
+          //   index -= 1;
+          // }
+
+        });
+      
+      
+      
       });
+
 
     </script>
     
